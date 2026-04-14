@@ -166,20 +166,42 @@ From histogram and heatmap analysis:
 ---
 
 ## Project Structure
-├── exact_ALU.v
-├── approx_ALU.v
-├── top_module.v
-├── wrappers/
+Approximate-ALU/
+│
+├── rtl/
+│   ├── exact_ALU.v
+│   ├── approx_ALU.v
+│   ├── top_module.v
+│   └── wrappers/
+│       ├── exact_wrapper.v
+│       └── approx_wrapper.v
+│
 ├── testbench/
-│ └── ALU_testbench.v
+│   └── ALU_testbench.v
+│
 ├── constraints/
-│ └── Constraints.xdc
+│   └── Constraints.xdc
+│
 ├── results/
-│ ├── exact_vs_approx.csv
-│ ├── plots/
-│ └── reports/
-└── README.md
+│   ├── csv/
+│   │   └── exact_vs_approx.csv
+│   │
+│   ├── plots/
+│   │   ├── fig1_med_vs_k.pdf
+│   │   ├── fig2_error_rate_vs_k.pdf
+│   │   ├── fig3_med_grouped_bar.pdf
+│   │   ├── fig4_med_vs_maxerr.pdf
+│   │   ├── fig5_distribution.pdf
+│   │   └── fig6_combined.pdf
+│   │
+│   ├── reports/
+│   │   ├── timing_exact.png
+│   │   ├── timing_approx.png
+│   │   └── utilization_report.txt
+│
+├── README.md
 
+---
 
 ## How to Run
 
