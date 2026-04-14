@@ -1,4 +1,5 @@
-# 🔷 FPGA-Based Approximate ALU with Design Space Exploration
+# FPGA-Based Approximate ALU with Design Space Exploration
+An FPGA-based implementation of an approximate ALU demonstrating non-trivial trade-offs between accuracy, hardware efficiency, and timing — showing that approximation does not always improve performance.
 
 ## Overview
 This project presents the design, implementation, and analysis of an **8-bit Approximate Arithmetic Logic Unit (ALU)** using Verilog, targeting a Xilinx FPGA (xc7z020).
