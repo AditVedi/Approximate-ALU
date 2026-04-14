@@ -166,6 +166,8 @@ From histogram and heatmap analysis:
 ---
 
 ## Project Structure
+
+```bash
 Approximate-ALU/
 │
 ├── rtl/
@@ -199,8 +201,8 @@ Approximate-ALU/
 │   │   ├── timing_approx.png
 │   │   └── utilization_report.txt
 │
-├── README.md
-
+└── README.md
+```
 ---
 
 ## How to Run
