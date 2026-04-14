@@ -100,6 +100,49 @@ Unlike conventional designs, this project performs a **full design-space explora
 | Validation | Limited | 65,536 inputs | Exhaustive |
 | Error Distribution | N/A | Structured | Non-random behavior |
 
+
+### 🔹 Overall Error Analysis (Combined)
+
+<p align="center">
+  <img src="results/plots/combined_analysis.jpg" width="700">
+</p>
+
+---
+
+### 🔹 Mean Error Distance vs Approximation Depth
+
+<p align="center">
+  <img src="results/plots/med_vs_k.jpg" width="600">
+</p>
+
+---
+
+### 🔹 Error Distribution (Heatmap & Histogram)
+
+<p align="center">
+  <img src="results/plots/error_distribution.jpg" width="700">
+</p>
+
+
+
+## Timing Analysis
+
+<p align="center">
+  <img src="results/reports/timing_exact.png" width="45%">
+  <img src="results/reports/timing_approx.png" width="45%">
+</p>
+
+<p align="center">
+  <b>Left:</b> Exact ALU &nbsp;&nbsp;&nbsp;&nbsp;
+  <b>Right:</b> Approximate ALU
+</p>
+
+
+## Resource Utilization
+
+- 📄 [Exact Utilization Report](results/reports/exact_utilization.txt)  
+- 📄 [Approx Utilization Report](results/reports/approx_utilization.txt)
+
 ---
 
 ## Key Insights
