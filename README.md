@@ -189,17 +189,15 @@ Approximate-ALU/
 │   │   └── exact_vs_approx.csv
 │   │
 │   ├── plots/
-│   │   ├── fig1_med_vs_k.pdf
-│   │   ├── fig2_error_rate_vs_k.pdf
-│   │   ├── fig3_med_grouped_bar.pdf
-│   │   ├── fig4_med_vs_maxerr.pdf
-│   │   ├── fig5_distribution.pdf
-│   │   └── fig6_combined.pdf
+│   │   ├── combined_analysis.jpg
+│   │   ├── error_distribution.jpg
+│   │   └── med_vs_k.jpg
 │   │
 │   ├── reports/
 │   │   ├── timing_exact.png
 │   │   ├── timing_approx.png
-│   │   └── utilization_report.txt
+│   │   └── exact_utilization.txt
+│   │   └── approx_utilization.txt
 │
 └── README.md
 ```
