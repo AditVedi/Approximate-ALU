@@ -287,10 +287,10 @@ This project demonstrates that:
 
 ## Future Work
 
-- Power analysis comparison
-- DSP-based multiplier optimization
-- ASIC synthesis (standard cell analysis)
-- Adaptive approximation techniques
+The current implementation is a design-space exploration harness rather than an optimised approximate ALU. Both exact and approximate units operate concurrently, and all approximation sub-units remain active regardless of the selected mode. This introduces evaluation overhead that inflates power and resource metrics. A production approximate ALU would instantiate only the selected approximation unit, yielding results more representative of true approximate computing trade-offs.
+
+
+Future work includes a single-unit implementation for fair FPGA benchmarking and ASIC synthesis to isolate transistor-level gains.
 
 ---
 
