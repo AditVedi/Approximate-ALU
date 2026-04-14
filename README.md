@@ -101,6 +101,7 @@ Unlike conventional designs, this project performs a **full design-space explora
 | Error Distribution | N/A | Structured | Non-random behavior |
 
 
+The following plots summarize the impact of approximation techniques on accuracy and hardware behavior across different approximation depths (K).
 ### 🔹 Overall Error Analysis (Combined)
 
 <p align="center">
@@ -122,6 +123,7 @@ Unlike conventional designs, this project performs a **full design-space explora
 <p align="center">
   <img src="results/plots/error_distribution.jpg" width="700">
 </p>
+Error distribution is structured rather than random, showing strong dependence on operand combinations.
 
 
 
@@ -136,6 +138,7 @@ Unlike conventional designs, this project performs a **full design-space explora
   <b>Left:</b> Exact ALU &nbsp;&nbsp;&nbsp;&nbsp;
   <b>Right:</b> Approximate ALU
 </p>
+Despite simplifying arithmetic operations, the approximate ALU exhibits reduced timing slack compared to the exact design. This indicates that additional control logic (masking, truncation) introduces overhead and can disrupt optimized carry-chain paths in FPGA implementations.
 
 
 ## Resource Utilization
@@ -145,7 +148,8 @@ Unlike conventional designs, this project performs a **full design-space explora
 
 ---
 
-## Key Insights
+## Key Takeaways
+The following key observations are derived from the experimental results and FPGA implementation analysis.
 
 ### 1. Approximation ≠ Faster
 Despite simplification, the approximate ALU shows:
