@@ -86,17 +86,17 @@ A parameterized ALU supporting:
 
 ### Error Distribution
 <p align="center">
-  <img src="configurable/results/plots/fig1.png" width="600">
+  <img src="configurable/results/plots/error_distribution.jpg" width="600">
 </p>
 
 ### Error vs Approximation Depth
 <p align="center">
-  <img src="configurable/results/plots/fig5.png" width="600">
+  <img src="configurable/results/plots/med_vs_k.jpg" width="600">
 </p>
 
 ### Combined Analysis
 <p align="center">
-  <img src="configurable/results/plots/fig6.png" width="600">
+  <img src="configurable/results/plots/combined_analysis.jpg" width="600">
 </p>
 
 ---
@@ -150,6 +150,16 @@ See `isolated_comparison/rtl/` for full implementation.
 | Slice LUTs | 8 | 8 | No change |
 | Slices | 2 | 4 | +2 (routing only) |
 | CARRY4 | 2 | 2 | No change |
+
+### Exact Power
+<p align="center">
+  <img src="isolated/results/exact_power.png" width="600">
+</p>
+
+### approx Power
+<p align="center">
+  <img src="isolated/results/approx_power.png" width="600">
+</p>
 
 ---
 
