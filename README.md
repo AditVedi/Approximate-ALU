@@ -1,300 +1,175 @@
-# FPGA-Based Approximate ALU with Design Space Exploration
-An FPGA-based implementation of an approximate ALU demonstrating non-trivial trade-offs between accuracy, hardware efficiency, and timing — showing that approximation does not always improve performance.
+# Approximate ALU: Trade-off Analysis on FPGA
 
-## Overview
-This project presents the design, implementation, and analysis of an **8-bit Approximate Arithmetic Logic Unit (ALU)** using Verilog, targeting a Xilinx FPGA (xc7z020).
+Does approximate computing actually improve hardware efficiency? This project implements an 8-bit ALU on FPGA across two design phases — first a configurable multi-mode design, then a fixed isolated implementation to explore the same.
+---
 
-The goal is to explore **approximate computing techniques** and evaluate their impact on:
-- Accuracy
-- Hardware utilization
-- Timing performance
+## Project Overview
 
-Unlike conventional designs, this project performs a **full design-space exploration** across multiple approximation schemes and depths.
+Approximate computing introduces controlled inaccuracies in arithmetic operations to potentially reduce power, area, or delay. This project evaluates whether such benefits hold true in FPGA implementations.
 
 ---
 
-## Features
+## Repository Structure
 
--  Exact ALU (baseline)
--  Approximate ALU with multiple techniques:
-  - ADD Truncation (AT)
-  - ADD LSB Masking (AL)
-  - MUL Partial Product Truncation (MP)
-  - Dense Approximation (full sweep)
--  Parameterized approximation depth (**K = 1 to 4**)
--  Automated testbench with statistical analysis
--  CSV logging for all experiments
--  Full 65,536 input validation (256 × 256 sweep)
--  FPGA synthesis with timing and utilization analysis
-
----
-
-## Architecture
-
-### Exact ALU Operations
-- ADD
-- SUB
-- AND
-- OR
-- XOR
-- MUL
-
-### Approximate Techniques
-
-| Technique | Description |
-|----------|------------|
-| ADD Truncation | Removes lower bits to simplify carry propagation |
-| ADD LSB Masking | Masks LSBs to reduce switching activity |
-| MUL PP Truncation | Truncates partial products in multiplication |
-| ADD Dense | Exhaustive approximation across full input space |
+Approximate-ALU/
+│
+├── configurable/
+│   ├── rtl/
+│   ├── testbench/
+│   ├── constraints/
+│   └── results/
+│
+├── isolated_comparison/
+│   ├── rtl/
+│   │   ├── approx_adder_k2.v
+│   │   ├── exact_adder.v
+│   │   ├── approx_wrapper.v
+│   │   ├── exact_wrapper.v
+│   │   └── top.v
+│   │
+│   ├── testbench/
+│   │   └── tb.v
+│   │
+│   ├── constraints/
+│   │   └── constraints.xdc
+│   │
+│   └── results/
+│       ├── power/
+│       ├── timing/
+│       └── utilization/
+│
+└── README.md
 
 ---
 
-## Methodology
+# Phase 1: Configurable Approximate ALU
 
-### Testbench Features
-- Multi-phase evaluation:
-  1. Exact baseline
-  2. ADD Trunc
-  3. ADD LSB Mask
-  4. MUL PP Trunc
-  5. Dense full sweep
-- Metrics computed:
-  - Mean Error Distance (MED)
-  - Error Rate (%)
-  - Maximum Error
-- Automated logging to CSV
+## Design
+
+A parameterized ALU supporting:
+- Multiple approximation techniques
+- Variable approximation depth (K)
+- Mode selection via control signals
+
+### Techniques Used
+- ADD Truncation  
+- LSB Masking  
+- Partial Product Truncation  
 
 ---
 
 ## Evaluation Metrics
 
-| Metric | Description |
-|------|-------------|
-| MED | Average absolute difference between exact and approximate output |
-| Error Rate | Percentage of incorrect outputs |
-| Max Error | Maximum deviation observed |
-| WNS | Worst Negative Slack (timing margin) |
-| WHS | Worst Hold Slack |
-| LUT Usage | FPGA resource consumption |
-| Carry Chains | Hardware mapping efficiency |
+- Mean Error Distance (MED)  
+- Error Rate  
+- Maximum Error  
+- Timing (WNS)  
+- Power Consumption  
 
 ---
 
-## Results & Analysis
+## Results Summary (Phase 1)
 
-### 🔷 Hardware & Accuracy Comparison
-
-| Metric | Exact ALU | Approx ALU | Insight |
-|------|----------|-----------|--------|
-| Functionality | Fully accurate | Controlled inaccuracy | Trade accuracy for efficiency |
-| WNS (Setup Slack) | 3.922 ns | 0.271 ns | Approx design is timing-critical |
-| WHS (Hold Slack) | 0.220 ns | 0.349 ns | Both safe |
-| Timing Violations | 0 | 0 | Both meet constraints |
-| LUT Usage | Baseline | 514 | Slight overhead due to control logic |
-| Flip-Flops | Baseline | 39 | Minimal sequential logic |
-| DSP Usage | 0 | 0 | Multiplier implemented using LUTs |
-| Carry Chains (CARRY4) | Used | 56 instances | Efficient FPGA mapping |
-| Error Rate | 0% | Up to ~90% | Depends on K |
-| MED | 0 | Increases with K | Non-linear growth |
-| Max Error | 0 | High (overflow cases) | Critical edge cases |
-| Validation | Limited | 65,536 inputs | Exhaustive |
-| Error Distribution | N/A | Structured | Non-random behavior |
-
-
-The following plots summarize the impact of approximation techniques on accuracy and hardware behavior across different approximation depths (K).
-### 🔹 Overall Error Analysis (Combined)
-
-<p align="center">
-  <img src="results/plots/combined_analysis.jpg" width="700">
-</p>
+| Metric         | Exact ALU  | Approx ALU  |
+|----------------|------------|-------------|
+| Dynamic Power  | 0.007 W    | 0.012 W     |
+| WNS            | 3.922 ns   | 0.271 ns    |
+| LUTs           | baseline   | 514         |
 
 ---
 
-### 🔹 Mean Error Distance vs Approximation Depth
+## Key Observations
 
-<p align="center">
-  <img src="results/plots/med_vs_k.jpg" width="600">
-</p>
-
----
-
-### 🔹 Error Distribution (Heatmap & Histogram)
-
-<p align="center">
-  <img src="results/plots/error_distribution.jpg" width="700">
-</p>
-Error distribution is structured rather than random, showing strong dependence on operand combinations.
-
-
-
-## Timing Analysis
-
-<p align="center">
-  <img src="results/reports/timing_exact.png" width="45%">
-  <img src="results/reports/timing_approx.png" width="45%">
-</p>
-
-<p align="center">
-  <b>Left:</b> Exact ALU &nbsp;&nbsp;&nbsp;&nbsp;
-  <b>Right:</b> Approximate ALU
-</p>
-Despite simplifying arithmetic operations, the approximate ALU exhibits reduced timing slack compared to the exact design. This indicates that additional control logic (masking, truncation) introduces overhead and can disrupt optimized carry-chain paths in FPGA implementations.
-
-
-## Resource Utilization
-
-- 📄 [Exact Utilization Report](results/reports/exact_utilization.txt)  
-- 📄 [Approx Utilization Report](results/reports/approx_utilization.txt)
+- Approximation does not guarantee performance improvement  
+- Timing degraded due to:
+  - Control logic (muxes)
+  - Disruption of carry-chain optimization  
+- Power increased due to:
+  - Additional switching activity  
+- Error increases non-linearly with approximation depth  
 
 ---
 
-## Key Takeaways
-The following key observations are derived from the experimental results and FPGA implementation analysis.
+## Insight
 
-### 1. Approximation ≠ Faster
-Despite simplification, the approximate ALU shows:
-- Lower timing slack (0.27 ns vs 3.9 ns)
-
-**Reason:**
-- Additional control logic (muxes, masking)
-- Disruption of optimized carry chains
+Configurable flexibility introduces hardware overhead that can negate the expected benefits of approximation.
 
 ---
 
-### 2. Non-Linear Accuracy Degradation
-- MED increases rapidly with approximation depth (K)
-- Error rate grows significantly
-
-**Conclusion:**
-Small approximation → manageable error  
-Large approximation → rapid degradation
+The observations from the configurable design motivated a controlled experiment to isolate the effect of approximation without control overhead.
 
 ---
 
-### 3. Critical Edge Cases
-- Overflow-induced outliers observed at higher K
+# Phase 2: Controlled Approximate ALU (Fixed Design)
 
-**Impact:**
-- Important for safety-critical systems
-- Limits applicability in precise computing
+## Design Approach
 
----
+To eliminate overhead, a simplified design was implemented:
 
-### 4. Error is Structured (Not Random)
-From histogram and heatmap analysis:
-- Errors depend on operand combinations
-- Clear patterns observed across input space
+- Fixed approximation method (K = 2)  
+- No multiplexers or control logic  
+- Dedicated datapath for approximation  
 
-**Implication:**
-- Predictable approximation behavior → exploitable in design
+The approximate adder operates as follows:
 
----
+- Lower 2 bits are computed using bitwise OR  
+- Upper bits are computed using standard addition without carry propagation from lower bits  
 
-## FPGA Implementation
+This removes carry dependency in the lower bits and reduces switching activity.
 
-- **Device:** Xilinx Zynq-7000 (xc7z020)
-- **Tool:** Vivado 2025.1
-
-### Resource Utilization (Approx ALU)
-- LUTs: 514 (~0.97%)
-- Flip-Flops: 39
-- DSPs: 0
-- BRAM: 0
-- CARRY4: 56
-- BUFG: 1
-
-### Timing Summary
-| Metric | Value |
-|------|------|
-| WNS | 0.271 ns |
-| WHS | 0.349 ns |
-| Timing Violations | 0 |
+See `isolated_comparison/rtl/` for full implementation.
 
 ---
 
-## Project Structure
+## Results Comparison (Phase 2)
 
-```bash
-Approximate-ALU/
-│
-├── rtl/
-│   ├── exact_ALU.v
-│   ├── approx_ALU.v
-│   ├── top_module.v
-│   └── wrappers/
-│       ├── exact_wrapper.v
-│       └── approx_wrapper.v
-│
-├── testbench/
-│   └── ALU_testbench.v
-│
-├── constraints/
-│   └── Constraints.xdc
-│
-├── results/
-│   ├── csv/
-│   │   └── exact_vs_approx.csv
-│   │
-│   ├── plots/
-│   │   ├── combined_analysis.jpg
-│   │   ├── error_distribution.jpg
-│   │   └── med_vs_k.jpg
-│   │
-│   ├── reports/
-│   │   ├── timing_exact.png
-│   │   ├── timing_approx.png
-│   │   └── exact_utilization.txt
-│   │   └── approx_utilization.txt
-│
-└── README.md
-```
----
-
-## How to Run
-
-### Simulation
-1. Open Vivado / simulator
-2. Run `ALU_testbench`
-3. Generate CSV output
-
-### Synthesis
-1. Add constraint file
-2. Run synthesis
-3. Check:
-   - Timing report
-   - Utilization report
+| Metric | Exact | Approx (K=2) | Change |
+|------|------|-------------|--------|
+| Total On-Chip Power | 0.111 W | 0.109 W | −1.8% |
+| Dynamic Power | 0.006 W | 0.005 W | −17% |
+| Signal Power | 7% of dynamic | 2% of dynamic | −71% |
+| Slice LUTs | 8 | 8 | No change |
+| Slices | 2 | 4 | +2 (routing only) |
+| CARRY4 | 2 | 2 | No change |
 
 ---
 
-## Applications
+## Observations
 
-- Low-power DSP systems
-- AI/ML accelerators
-- Image and signal processing
-- Error-tolerant computing systems
-
----
-
-## Conclusion
-
-This project demonstrates that:
-- Approximate computing introduces **complex trade-offs**
-- Accuracy, timing, and hardware efficiency are **not linearly related**
-- Approximation does not always improve performance
+- Approximate ALU reduces dynamic power by 17%  
+- Signal switching activity drops significantly (~71% reduction)  
+- LUT usage remains unchanged due to FPGA carry-chain mapping  
+- Slice count increases from 2 to 4 due to routing of the split datapath, not additional logic  
 
 ---
 
-## Future Work
+## Key Insight
 
-The current implementation is a design-space exploration harness rather than an optimised approximate ALU. Both exact and approximate units operate concurrently, and all approximation sub-units remain active regardless of the selected mode. This introduces evaluation overhead that inflates power and resource metrics. A production approximate ALU would instantiate only the selected approximation unit, yielding results more representative of true approximate computing trade-offs.
-
-
-Future work includes a single-unit implementation for fair FPGA benchmarking and ASIC synthesis to isolate transistor-level gains.
+The 71% reduction in signal switching activity confirms that approximate computing's power benefit is real — but only when control overhead is eliminated. A configurable multi-mode design can negate all gains through mux and mode-select logic alone.
 
 ---
 
-## Author
+## FPGA-Specific Observation
+
+Total power is dominated by static power (~90%), limiting the overall impact of logic-level optimizations.
+
+---
+
+# Final Conclusion
+
+This project demonstrates that approximate computing's benefits are highly implementation-dependent. Overhead from control logic can completely negate power savings, while a clean fixed-mode design delivers measurable improvement. The methodology matters as much as the technique.
+Approximate computing must therefore be carefully aligned with both hardware architecture and implementation methodology.
+
+---
+
+# Tools Used
+
+- Verilog HDL  
+- Xilinx Vivado  
+
+---
+
+# Author
 
 Aditya Dwivedi  
-Electronics Engineering(VLSI Design and technology)
+VLSI Design & Technology  
