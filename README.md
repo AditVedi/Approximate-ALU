@@ -1,6 +1,7 @@
 # Approximate ALU: Trade-off Analysis on FPGA
 
-Does approximate computing actually improve hardware efficiency? This project implements an 8-bit ALU on FPGA across two design phases — first a configurable multi-mode design, then a fixed isolated implementation to explore the same.
+This project explores the impact of approximate computing on hardware design by implementing and analyzing an 8-bit ALU on FPGA.
+
 ---
 
 ## Project Overview
@@ -10,6 +11,7 @@ Approximate computing introduces controlled inaccuracies in arithmetic operation
 ---
 
 ## Repository Structure
+```bash
 
 Approximate-ALU/
 │
@@ -18,6 +20,8 @@ Approximate-ALU/
 │   ├── testbench/
 │   ├── constraints/
 │   └── results/
+│       ├── plots/
+│       └── reports/
 │
 ├── isolated_comparison/
 │   ├── rtl/
@@ -39,7 +43,7 @@ Approximate-ALU/
 │       └── utilization/
 │
 └── README.md
-
+```
 ---
 
 # Phase 1: Configurable Approximate ALU
@@ -47,9 +51,9 @@ Approximate-ALU/
 ## Design
 
 A parameterized ALU supporting:
-- Multiple approximation techniques
-- Variable approximation depth (K)
-- Mode selection via control signals
+- Multiple approximation techniques  
+- Variable approximation depth (K)  
+- Mode selection via control signals  
 
 ### Techniques Used
 - ADD Truncation  
@@ -78,15 +82,32 @@ A parameterized ALU supporting:
 
 ---
 
+## Visual Analysis (Phase 1)
+
+### Error Distribution
+<p align="center">
+  <img src="configurable/results/plots/fig1.png" width="600">
+</p>
+
+### Error vs Approximation Depth
+<p align="center">
+  <img src="configurable/results/plots/fig5.png" width="600">
+</p>
+
+### Combined Analysis
+<p align="center">
+  <img src="configurable/results/plots/fig6.png" width="600">
+</p>
+
+---
+
 ## Key Observations
 
 - Approximation does not guarantee performance improvement  
-- Timing degraded due to:
-  - Control logic (muxes)
-  - Disruption of carry-chain optimization  
-- Power increased due to:
-  - Additional switching activity  
+- Timing degrades significantly (3.922 ns → 0.271 ns slack)  
+- Dynamic power increases (0.007 W → 0.012 W)  
 - Error increases non-linearly with approximation depth  
+- Control logic (muxing + modes) introduces major overhead  
 
 ---
 
@@ -108,14 +129,12 @@ To eliminate overhead, a simplified design was implemented:
 
 - Fixed approximation method (K = 2)  
 - No multiplexers or control logic  
-- Dedicated datapath for approximation  
+- Dedicated datapath  
 
-The approximate adder operates as follows:
+### Implementation
 
-- Lower 2 bits are computed using bitwise OR  
-- Upper bits are computed using standard addition without carry propagation from lower bits  
-
-This removes carry dependency in the lower bits and reduces switching activity.
+- Lower 2 bits → bitwise OR  
+- Upper bits → standard addition without carry propagation  
 
 See `isolated_comparison/rtl/` for full implementation.
 
@@ -136,10 +155,10 @@ See `isolated_comparison/rtl/` for full implementation.
 
 ## Observations
 
-- Approximate ALU reduces dynamic power by 17%  
-- Signal switching activity drops significantly (~71% reduction)  
-- LUT usage remains unchanged due to FPGA carry-chain mapping  
-- Slice count increases from 2 to 4 due to routing of the split datapath, not additional logic  
+- Dynamic power reduced by 17%  
+- Signal switching reduced by ~71%  
+- LUT usage unchanged due to carry-chain mapping  
+- Slice count increases due to routing, not logic  
 
 ---
 
@@ -157,7 +176,12 @@ Total power is dominated by static power (~90%), limiting the overall impact of 
 
 # Final Conclusion
 
-This project demonstrates that approximate computing's benefits are highly implementation-dependent. Overhead from control logic can completely negate power savings, while a clean fixed-mode design delivers measurable improvement. The methodology matters as much as the technique.
+This project demonstrates that approximate computing is not inherently beneficial.
+
+- Configurable designs introduce control overhead that degrades timing and power  
+- Fixed designs enable measurable power improvements  
+- FPGA architecture (carry chains and routing constraints) strongly influences outcomes  
+
 Approximate computing must therefore be carefully aligned with both hardware architecture and implementation methodology.
 
 ---
